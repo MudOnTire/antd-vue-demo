@@ -3,9 +3,12 @@
     ghostClass="ghost"
     tag="tbody"
     :list="data.dataSource"
+    :move="onMove"
     @change="onChange"
   >
+    <!-- <transition-group tag="div" name="list"> -->
     <slot></slot>
+    <!-- </transition-group> -->
   </Draggable>
 </template>
 <script>
@@ -25,6 +28,15 @@ export default {
     onChange(evt) {
       console.log(evt.moved);
     },
+    onMove(evt, originalEvent) {
+      console.log("on move", evt, originalEvent);
+    },
   },
 };
 </script>
+<style>
+tr {
+  cursor: grab;
+  transition: all 0.5s;
+}
+</style>

@@ -6,7 +6,6 @@
     :loading="loading"
     :components="components"
     :rowKey="(record) => record.email"
-    style="height: 400px; overflow: auto auto"
   >
     <template slot="name" slot-scope="name"
       >{{ name.first }} {{ name.last }}</template
@@ -15,7 +14,7 @@
 </template>
 <script>
 import reqwest from "reqwest";
-import CustomWrapper from "./components/CustomWrapper";
+import DraggbleWrapper from "./components/DraggbleWrapper";
 
 const columns = [
   {
@@ -49,7 +48,7 @@ export default {
       columns,
       components: {
         body: {
-          wrapper: CustomWrapper,
+          wrapper: DraggbleWrapper,
         },
       },
     };
