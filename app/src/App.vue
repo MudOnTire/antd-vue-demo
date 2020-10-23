@@ -1,16 +1,27 @@
 <template>
-  <a-table
-    :columns="columns"
-    :dataSource="dataSource"
-    :pagination="pagination"
-    :loading="loading"
-    :components="components"
-    :rowKey="(record) => record.email"
-  >
-    <template slot="name" slot-scope="name"
-      >{{ name.first }} {{ name.last }}</template
+  <div>
+    <a-table
+      :columns="columns"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      :components="components"
+      :rowKey="(record) => record.email"
+      :row-selection="{
+        selectedRowKeys: selectedRowKeys,
+      }"
+      :customRow="customRow"
     >
-  </a-table>
+      <template slot="name" slot-scope="name"
+        >{{ name.first }} {{ name.last }}</template
+      >
+    </a-table>
+    <div v-show="false">
+      <div class="row-icon" ref="rowIcon">
+        <a-icon type="star" />
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import reqwest from "reqwest";
@@ -46,6 +57,7 @@ export default {
       pagination: {},
       dataSource: [],
       columns,
+      selectedRowKeys: [],
       components: {
         body: {
           wrapper: DraggbleWrapper,
@@ -60,8 +72,28 @@ export default {
   },
   mounted() {
     this.fetch();
+    document.addEventListener("mouseenter", (e) => {
+      console.log("mouseenter");
+      if (e.target.tagName === "tr") {
+        console.log(e.target);
+      }
+    });
   },
   methods: {
+    customRow() {
+      return {
+        on: {
+          mouseenter: (event) => {
+            const checkboxWrapper = event.target.querySelector("td");
+            checkboxWrapper.prepend(this.$refs.rowIcon);
+          },
+          mouseleave: (event) => {
+            const checkboxWrapper = event.target.querySelector("td");
+            checkboxWrapper.removeChild(this.$refs.rowIcon);
+          },
+        },
+      };
+    },
     fetch(params = {}) {
       this.loading = true;
       reqwest({
@@ -85,3 +117,19 @@ export default {
   },
 };
 </script>
+<style>
+.ant-table-selection-column {
+  position: relative;
+}
+</style>
+
+<style scoped>
+.row-icon {
+  position: absolute;
+  left: 3px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+}
+</style>
